@@ -30,7 +30,7 @@ class Follows(db.Model):
 class Likes(db.Model):
     """Mapping user likes to warbles."""
 
-    __tablename__ = 'likes' 
+    __tablename__ = 'likes'
 
     id = db.Column(
         db.Integer,
@@ -121,19 +121,20 @@ class User(db.Model):
     def is_followed_by(self, other_user):
         """Is this user followed by `other_user`?"""
 
-        found_user_list = [user for user in self.followers if user == other_user]
+        found_user_list = [
+            user for user in self.followers if user == other_user]
         return len(found_user_list) == 1
 
     def is_following(self, other_user):
         """Is this user following `other_use`?"""
 
-        found_user_list = [user for user in self.following if user == other_user]
+        found_user_list = [
+            user for user in self.following if user == other_user]
         return len(found_user_list) == 1
 
     @classmethod
     def signup(cls, username, email, password, image_url):
         """Sign up user.
-
         Hashes password and adds user to system.
         """
 
@@ -152,11 +153,9 @@ class User(db.Model):
     @classmethod
     def authenticate(cls, username, password):
         """Find user with `username` and `password`.
-
         This is a class method (call it on the class, not an individual user.)
         It searches for a user whose password hash matches this password
         and, if it finds such a user, returns that user object.
-
         If can't find matching user (or if password is wrong), returns False.
         """
 
@@ -202,7 +201,6 @@ class Message(db.Model):
 
 def connect_db(app):
     """Connect this database to provided Flask app.
-
     You should call this in your Flask app.
     """
 

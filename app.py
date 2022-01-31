@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from password import password
 
-from forms import UserAddForm, LoginForm, MessageForm
+from forms import UserAddForm, LoginForm, MessageForm, EditUserForm
 from models import db, connect_db, User, Message
 
 CURR_USER_KEY = "curr_user"
@@ -218,6 +218,28 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
+    if not g.user:
+        flash("Access UNAUTHORIZED.", "danger")
+        return redirect("/")
+
+    user = g.user
+    form = EditUserForm(obj=user)
+
+    if form.validate_on_submit():
+        password = form.password.data
+        if User.authenticate(user.username, password):
+            user.username = form.username.data
+            user.email = form.email.data
+            user.image_url = form.image_url.data or "/static/images/default-pic.png"
+            user.header_image_url = form.header_image_url.data or "/static/images/warbler-hero.jpg"
+            user.bio = form.bio.data
+
+            db.session.commit()
+            return redirect(f"/users/{user.id}")
+        flash("Wrong password pal, try again. Go on, try again, I dare you, I double dare you!", 'danger')
+
+
+    return render_template("users/edit.html", form=form, user_id=user.id)
     # IMPLEMENT THIS
 
 
